@@ -3,9 +3,6 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
-# Install yarn globally
-RUN npm install -g yarn
-
 # Copy only package.json and yarn.lock for better caching
 COPY package.json yarn.lock ./
 
@@ -23,10 +20,9 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install yarn globally and add a non-root user
-RUN npm install -g yarn && \
-    addgroup -S appgroup && \
-    adduser -S appuser -G appgroup && \
+# Add a non-root user
+RUN addgroup -S appgroup && \
+    adduser -S -D -H -G appgroup appuser && \
     chown -R appuser:appgroup /app
 
 # Set NODE_ENV to production
